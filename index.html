@@ -1,0 +1,267 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>60-Day Habit Checklist</title>
+  <style>
+    :root{--bg:#0f172a;--card:#0b1220;--muted:#9aa4b2;--accent:#60a5fa;--good:#34d399}
+    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+    body{margin:0;background:linear-gradient(180deg,#071029 0%, #071a2a 100%);color:#e6eef8;padding:20px}
+    .wrap{max-width:980px;margin:0 auto}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between}
+    h1{font-size:20px;margin:0}
+    .sub{color:var(--muted);font-size:13px}
+    .card{background:rgba(255,255,255,0.03);padding:16px;border-radius:10px;margin-top:16px}
+    .grid{display:grid;grid-template-columns:1fr 340px;gap:16px}
+    .small{font-size:13px;color:var(--muted)}
+    .habit-list{display:flex;flex-direction:column;gap:8px}
+    .habit{display:flex;align-items:center;gap:8px;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px}
+    .habit input[type=text]{flex:1;background:transparent;border:0;color:inherit;outline:none}
+    .btn{background:var(--accent);border:0;padding:8px 10px;color:#04233e;border-radius:8px;cursor:pointer}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .day-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-top:12px}
+    .day{background:rgba(255,255,255,0.02);padding:6px;border-radius:6px;text-align:center;font-size:12px;cursor:pointer}
+    .day.done{background:linear-gradient(90deg,var(--good),#10b981);color:#04233e;font-weight:700}
+    .progress{height:12px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#3b82f6);width:0%}
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    .controls{display:flex;gap:8px;flex-wrap:wrap}
+    .stats{display:flex;gap:12px;align-items:center}
+    .stat{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;font-size:13px}
+    label.toggle{display:flex;gap:8px;align-items:center;cursor:pointer}
+    input[type=checkbox]{width:18px;height:18px}
+    .habit-actions{display:flex;gap:6px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr;}.day-grid{grid-template-columns:repeat(6,1fr)}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>60‑Day Habit Change Plan</h1>
+        <div class="sub">Small daily wins — build consistent sleep, diet & activity habits</div>
+      </div>
+      <div class="stats">
+        <div class="stat">Start: <strong id="startDate">(not set)</strong></div>
+        <div class="stat">Days tracked: <strong id="daysTracked">0</strong>/60</div>
+      </div>
+    </header><div class="grid">
+  <section>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div class="small">Select your 60-day start date</div>
+          <input type="date" id="start" />
+        </div>
+        <div style="text-align:right">
+          <div class="small">Progress</div>
+          <div class="progress" style="width:220px"><i id="progFill"></i></div>
+        </div>
+      </div>
+
+      <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
+
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <div style="flex:1">
+          <div class="small">Daily habits</div>
+          <div class="habit-list" id="habitList"></div>
+
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input id="newHabit" type="text" placeholder="Add custom habit (e.g., 10 min walk)" />
+            <button class="btn" id="addHabit">Add</button>
+            <button class="btn secondary" id="resetHabits">Reset</button>
+          </div>
+        </div>
+
+        <div style="width:320px">
+          <div class="small">60‑day calendar (tap a day to open checklist)</div>
+          <div class="day-grid" id="dayGrid"></div>
+
+          <div style="margin-top:8px;display:flex;gap:8px;justify-content:space-between;align-items:center">
+            <div class="small">Selected day: <strong id="selectedDayText">—</strong></div>
+            <div style="display:flex;gap:8px">
+              <button class="btn" id="prevDay">Prev</button>
+              <button class="btn" id="nextDay">Next</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
+
+      <div id="dayChecklistArea" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div>
+            <div class="small">Checklist for</div>
+            <div style="font-weight:700" id="selectedDayHeader">Day 1 — Date</div>
+          </div>
+          <div class="habit-actions">
+            <button class="btn secondary" id="clearDay">Clear</button>
+            <button class="btn" id="markAll">Mark all done</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" id="checklist"></div>
+      </div>
+
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3 style="margin:0;font-size:15px">60-Day Plan (overview)</h3>
+      <p class="small" style="margin-top:8px">Four phases — each phase is 15 days. Focus one area at a time but keep previous wins.</p>
+
+      <ol style="margin:10px 0 0 18px;font-size:14px">
+        <li><strong>Days 1–15 (Sleep & baseline)</strong>: Move bedtime earlier by 15 minutes every 3 days until you reach 7–8 hrs. No screens 30 min before bed. Track hours of sleep daily.</li>
+        <li><strong>Days 16–30 (Stabilize blood sugar)</strong>: Lower refined carbs, add protein for breakfast, 10–15 min walk after meals, drink water first thing and between meals.</li>
+        <li><strong>Days 31–45 (Build movement)</strong>: Add strength training 2× week, brisk walks 4× week, short post-meal walks daily. Increase NEAT (standing, stairs).</li>
+        <li><strong>Days 46–60 (Refine & solidify)</strong>: Tighten fasting adherence, reduce hidden calories, aim for consistent 7–8 hrs sleep, review labs if no improvement.</li>
+      </ol>
+
+      <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
+      <div class="small">Tip: start with 3–4 core daily habits (sleep target, no sugar after 8pm, 10-min post-meal walk, 20–30 min strength/cardio). Add more only after these are consistent for a week.</div>
+    </div>
+
+  </section>
+
+  <aside>
+    <div class="card">
+      <div class="small">Quick actions</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+        <button class="btn" id="markToday">Open today</button>
+        <button class="btn secondary" id="export">Export JSON</button>
+        <button class="btn secondary" id="importBtn">Import JSON</button>
+        <input type="file" id="importFile" style="display:none" accept="application/json" />
+        <button class="btn secondary" id="clearAll">Clear all data</button>
+      </div>
+
+      <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
+
+      <div class="small">Default habits (editable)</div>
+      <ul style="margin:8px 0 0 18px;color:var(--muted)">
+        <li>Sleep >= 7 hrs</li>
+        <li>No sugar / sugary drinks</li>
+        <li>Protein-rich breakfast</li>
+        <li>10–15 min walk after meal</li>
+        <li>Strength or bodyweight session</li>
+      </ul>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="small">How to use</div>
+      <ol style="margin:8px 0 0 18px;color:var(--muted)">
+        <li>Choose a start date (day 1) — this creates 60 days.</li>
+        <li>Edit daily habits to match your goals.</li>
+        <li>Tap any day and check off habits as you complete them.</li>
+        <li>Use export/import to backup or move between devices.</li>
+      </ol>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div class="small">Made for personal tracking — stores data in your browser only (localStorage). To publish on GitHub: create a repo, add this file as <code>index.html</code> and enable GitHub Pages from the repository settings.</div>
+</footer>
+
+  </div>  <script>
+    // Simple localStorage-based 60-day checklist
+    const STORAGE_KEY = 'habit60_v1';
+    const defaultHabits = ['Sleep ≥ 7 hrs','No sugary drinks','Protein breakfast','10–15 min post-meal walk','Strength session (20–30 min)'];
+
+    const startInput = document.getElementById('start');
+    const habitList = document.getElementById('habitList');
+    const newHabit = document.getElementById('newHabit');
+    const addHabit = document.getElementById('addHabit');
+    const dayGrid = document.getElementById('dayGrid');
+    const selectedDayText = document.getElementById('selectedDayText');
+    const selectedDayHeader = document.getElementById('selectedDayHeader');
+    const checklist = document.getElementById('checklist');
+    const dayChecklistArea = document.getElementById('dayChecklistArea');
+    const progFill = document.getElementById('progFill');
+    const startDateLabel = document.getElementById('startDate');
+    const daysTrackedLabel = document.getElementById('daysTracked');
+
+    let state = loadState();
+    let selectedIndex = 0;
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(raw) return JSON.parse(raw);
+      }catch(e){console.error(e)}
+      return {start:null,habits:defaultHabits.slice(),days:{}};
+    }
+    function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+
+    function renderHabits(){habitList.innerHTML='';state.habits.forEach((h,idx)=>{
+      const el = document.createElement('div');el.className='habit';
+      const cb = document.createElement('input');cb.type='checkbox';cb.checked=true;cb.style.visibility='hidden';
+      const input = document.createElement('input');input.type='text';input.value=h;input.onchange=()=>{state.habits[idx]=input.value;saveState();renderDayChecklist();}
+      const del = document.createElement('button');del.className='btn secondary';del.textContent='Delete';del.onclick=()=>{state.habits.splice(idx,1);saveState();renderHabits();renderDayChecklist();renderDayGrid();}
+      el.appendChild(input);el.appendChild(del);habitList.appendChild(el);
+    })}
+
+    addHabit.addEventListener('click',()=>{const v=newHabit.value.trim();if(!v) return;state.habits.push(v);newHabit.value='';saveState();renderHabits();renderDayChecklist();renderDayGrid();})
+
+    document.getElementById('resetHabits').addEventListener('click',()=>{if(!confirm('Reset to default habits?'))return;state.habits=defaultHabits.slice();saveState();renderHabits();renderDayChecklist();renderDayGrid();})
+
+    startInput.addEventListener('change',()=>{state.start = startInput.value || null;saveState();renderAll();})
+
+    function makeDays(){
+      if(!state.start) return [];
+      const arr=[];const s=new Date(state.start+'T00:00:00');
+      for(let i=0;i<60;i++){const d=new Date(s);d.setDate(s.getDate()+i);arr.push(d)}
+      return arr;
+    }
+
+    function renderDayGrid(){dayGrid.innerHTML='';const days=makeDays();days.forEach((d,i)=>{
+      const dd=document.createElement('div');dd.className='day';dd.textContent='D'+(i+1);dd.title=d.toDateString();
+      const key = keyFor(i);
+      if(state.days[key] && state.days[key].completedCount>=state.habits.length) dd.classList.add('done');
+      dd.onclick=()=>{openDay(i)};dayGrid.appendChild(dd);
+    });updateProgress();}
+
+    function openDay(i){selectedIndex=i;const days=makeDays();if(!days[i]) return;const d=days[i];selectedDayText.textContent='Day '+(i+1)+' — '+d.toLocaleDateString();selectedDayHeader.textContent='Day '+(i+1)+' — '+d.toDateString();dayChecklistArea.style.display='block';renderDayChecklist();}
+
+    function renderDayChecklist(){checklist.innerHTML='';const k=keyFor(selectedIndex);const saved = state.days[k] || {items:{},note:''};state.habits.forEach((h,idx)=>{
+      const row=document.createElement('div');row.style.display='flex';row.style.justifyContent='space-between';row.style.alignItems='center';row.style.padding='8px 0';
+      const left=document.createElement('div');left.textContent=h;left.style.flex='1';
+      const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!saved.items[idx];cb.onchange=()=>{saved.items[idx]=cb.checked;saveDay(k,saved);renderDayGrid();renderDayChecklist();}
+      row.appendChild(left);row.appendChild(cb);checklist.appendChild(row);
+    });
+    const note = document.createElement('textarea');note.rows=3;note.style.width='100%';note.placeholder='Notes (optional)';note.value=saved.note||'';note.onchange=()=>{saved.note=note.value;saveDay(k,saved)};checklist.appendChild(note);
+    const meta=document.createElement('div');meta.style.marginTop='8px';meta.style.display='flex';meta.style.justifyContent='flex-end';
+    const doneCount = Object.values(saved.items||{}).filter(Boolean).length;meta.innerHTML=`<span class="small">Completed: ${doneCount}/${state.habits.length}</span>`;checklist.appendChild(meta);
+  }
+
+    function saveDay(key,obj){obj.completedCount = Object.values(obj.items||{}).filter(Boolean).length;state.days[key]=obj;saveState();updateProgress();}
+
+    function keyFor(i){if(!state.start) return null;return 'd'+(i+1)}
+
+    document.getElementById('prevDay').addEventListener('click',()=>{if(selectedIndex>0) openDay(selectedIndex-1)})
+    document.getElementById('nextDay').addEventListener('click',()=>{if(selectedIndex<59) openDay(selectedIndex+1)})
+    document.getElementById('markAll').addEventListener('click',()=>{const k=keyFor(selectedIndex);if(!k) return;const obj={items:{},note:''};state.habits.forEach((_,i)=>obj.items[i]=true);saveDay(k,obj);renderDayChecklist();renderDayGrid();})
+    document.getElementById('clearDay').addEventListener('click',()=>{const k=keyFor(selectedIndex);if(!k) return;delete state.days[k];saveState();renderDayChecklist();renderDayGrid();})
+
+    document.getElementById('markToday').addEventListener('click',()=>{
+      if(!state.start){alert('Set a start date first.');return}
+      const today = new Date();const s=new Date(state.start+'T00:00:00');const diff = Math.floor((today - s) / (24*3600*1000));if(diff<0||diff>59){alert('Today is outside your 60-day window.');return}
+      openDay(diff);
+    })
+
+    function updateProgress(){const total = 60;let doneDays=0;for(let i=0;i<60;i++){const k='d'+(i+1);if(state.days[k] && state.days[k].completedCount>=state.habits.length) doneDays++}
+      progFill.style.width = (doneDays/total*100)+'%';daysTrackedLabel.textContent = doneDays;startDateLabel.textContent = state.start||'(not set)';}
+
+    document.getElementById('export').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(state, null, 2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='habit60-export.json';a.click();URL.revokeObjectURL(url)})
+    document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click())
+    document.getElementById('importFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f) return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);saveState();renderAll();alert('Import complete')}catch(err){alert('Invalid file')}};r.readAsText(f)})
+
+    document.getElementById('clearAll').addEventListener('click',()=>{if(!confirm('Clear all saved data?')) return;localStorage.removeItem(STORAGE_KEY);state=loadState();renderAll();})
+
+    // init
+    function renderAll(){renderHabits();renderDayGrid();if(state.start) startInput.value = state.start;updateProgress();}
+    renderAll();
+  </script></body>
+</html>
