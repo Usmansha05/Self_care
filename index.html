@@ -3,80 +3,451 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>60-Day Habit Checklist — Premium</title>
+  <title>60-Day Habit Transformation — Premium Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <meta name="color-scheme" content="dark">
   <style>
     :root{
-      --bg-100: #071029;
-      --bg-200: #071a2a;
-      --card: rgba(255,255,255,0.04);
-      --muted: #9aa4b2;
-      --accent: linear-gradient(90deg,#60a5fa,#3b82f6);
-      --glass: rgba(255,255,255,0.03);
-      --good: #34d399;
-      --danger: #fb7185;
-      --radius: 12px;
-      --max-width: 1100px;
+      --bg-dark: #0a0e1a;
+      --bg-mid: #111827;
+      --card-bg: rgba(17, 24, 39, 0.85);
+      --border: rgba(255,255,255,0.08);
+      --text-primary: #f9fafb;
+      --text-muted: #9ca3af;
+      --accent-gold: #f59e0b;
+      --accent-gold-light: #fbbf24;
+      --glass: rgba(255,255,255,0.05);
+      --glass-border: rgba(255,255,255,0.12);
+      --success: #10b981;
+      --radius: 16px;
+      --max-width: 1400px;
+      --shadow-luxury: 0 20px 60px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.1);
     }
-    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:#e6eef8}
-    html,body{height:100%;margin:0;background:radial-gradient(1200px 600px at 10% 10%, rgba(59,130,246,0.06), transparent 8%), linear-gradient(180deg,var(--bg-100) 0%, var(--bg-200) 100%);}
-    body{padding:28px;display:flex;justify-content:center}
-    .wrap{width:100%;max-width:var(--max-width)}
+    
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+    
+    html,body{
+      height:100%;
+      font-family:Inter,system-ui,-apple-system,sans-serif;
+      color:var(--text-primary);
+      background:var(--bg-dark);
+    }
+    
+    body{
+      background:radial-gradient(ellipse 120% 80% at 50% -20%, rgba(245,158,11,0.15), transparent 50%),
+                  radial-gradient(ellipse 100% 60% at 80% 100%, rgba(59,130,246,0.08), transparent 50%),
+                  linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-mid) 100%);
+      padding:40px 24px;
+      display:flex;
+      justify-content:center;
+      min-height:100vh;
+    }
+    
+    .wrap{
+      width:100%;
+      max-width:var(--max-width);
+    }
 
-    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,#0ea5e9 0%,#6366f1 100%);display:grid;place-items:center;font-weight:800;color:#04233e}
-    h1{font-size:18px;margin:0}
-    .sub{color:var(--muted);font-size:13px}
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:32px;
+      margin-bottom:48px;
+      flex-wrap:wrap;
+    }
+    
+    .brand{
+      display:flex;
+      gap:20px;
+      align-items:center;
+    }
+    
+    .logo{
+      width:64px;
+      height:64px;
+      border-radius:16px;
+      background:linear-gradient(135deg,var(--accent-gold) 0%,var(--accent-gold-light) 100%);
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      font-size:28px;
+      color:var(--bg-dark);
+      box-shadow:0 10px 40px rgba(245,158,11,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+    
+    h1{
+      font-size:32px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      background:linear-gradient(135deg,var(--text-primary),var(--accent-gold-light));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    
+    .sub{
+      color:var(--text-muted);
+      font-size:15px;
+      margin-top:6px;
+      font-weight:500;
+    }
 
-    .top-stats{display:flex;gap:12px;align-items:center}
-    .stat{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:10px;border-radius:10px;min-width:120px;text-align:center}
-    .stat strong{display:block;font-size:16px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:var(--radius);margin-top:16px;box-shadow:0 6px 30px rgba(2,6,23,0.6);}
+    .top-stats{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    
+    .stat{
+      background:var(--glass);
+      backdrop-filter:blur(20px);
+      padding:20px 28px;
+      border-radius:14px;
+      border:1px solid var(--glass-border);
+      min-width:140px;
+      text-align:center;
+      box-shadow:0 8px 32px rgba(0,0,0,0.3);
+    }
+    
+    .stat .label{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      color:var(--text-muted);
+      font-weight:600;
+      margin-bottom:6px;
+    }
+    
+    .stat strong{
+      display:block;
+      font-size:24px;
+      font-weight:800;
+      color:var(--accent-gold-light);
+    }
+    
+    .card{
+      background:var(--card-bg);
+      backdrop-filter:blur(30px);
+      padding:32px;
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow-luxury);
+      margin-bottom:24px;
+    }
 
-    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:14px}
-    .small{font-size:13px;color:var(--muted)}
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 420px;
+      gap:32px;
+    }
+    
+    .small{
+      font-size:13px;
+      color:var(--text-muted);
+      font-weight:500;
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+    }
+    
+    .section-title{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:16px;
+      color:var(--text-primary);
+    }
 
-    /* habits */
-    .habit-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-    .habit{display:flex;align-items:center;gap:10px;padding:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border-radius:10px}
-    .habit input[type=text]{flex:1;background:transparent;border:0;color:inherit;outline:none;font-weight:600}
-    .habit .handle{cursor:grab;padding:6px;border-radius:6px}
-    .btn{background:linear-gradient(90deg,#60a5fa,#3b82f6);border:0;padding:8px 12px;color:#04233e;border-radius:10px;cursor:pointer;font-weight:700}
-    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:600}
+    .habit-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-top:16px;
+    }
+    
+    .habit{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:16px 20px;
+      background:var(--glass);
+      backdrop-filter:blur(10px);
+      border-radius:12px;
+      border:1px solid var(--glass-border);
+      transition:all 0.2s ease;
+    }
+    
+    .habit:hover{
+      background:rgba(255,255,255,0.08);
+      border-color:var(--accent-gold);
+      transform:translateX(4px);
+    }
+    
+    .habit input[type=text]{
+      flex:1;
+      background:transparent;
+      border:0;
+      color:var(--text-primary);
+      outline:none;
+      font-weight:600;
+      font-size:15px;
+    }
+    
+    .btn{
+      background:linear-gradient(135deg,var(--accent-gold),var(--accent-gold-light));
+      border:0;
+      padding:12px 24px;
+      color:var(--bg-dark);
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:14px;
+      transition:all 0.2s ease;
+      box-shadow:0 4px 16px rgba(245,158,11,0.3);
+    }
+    
+    .btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 6px 24px rgba(245,158,11,0.5);
+    }
+    
+    .btn.secondary{
+      background:transparent;
+      border:1px solid var(--glass-border);
+      color:var(--text-muted);
+      font-weight:600;
+      box-shadow:none;
+    }
+    
+    .btn.secondary:hover{
+      border-color:var(--accent-gold);
+      color:var(--accent-gold-light);
+      background:rgba(245,158,11,0.05);
+    }
 
-    /* day grid */
-    .day-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;margin-top:12px}
-    .day{background:var(--glass);padding:10px;border-radius:10px;text-align:center;font-size:13px;cursor:pointer;transition:transform .12s ease, box-shadow .12s ease}
-    .day:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.45)}
-    .day .dnum{font-weight:700}
-    .day .ddate{font-size:11px;color:var(--muted);margin-top:6px}
-    .day.done{background:linear-gradient(90deg,var(--good),#10b981);color:#04233e}
-    .day.today{outline:2px solid rgba(59,130,246,0.18)}
+    .day-grid{
+      display:grid;
+      grid-template-columns:repeat(10,1fr);
+      gap:10px;
+      margin-top:20px;
+    }
+    
+    .day{
+      background:var(--glass);
+      backdrop-filter:blur(10px);
+      padding:16px 12px;
+      border-radius:12px;
+      border:1px solid var(--glass-border);
+      text-align:center;
+      font-size:13px;
+      cursor:pointer;
+      transition:all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .day:hover{
+      transform:translateY(-8px);
+      box-shadow:0 16px 40px rgba(0,0,0,0.4);
+      border-color:var(--accent-gold);
+      background:rgba(245,158,11,0.1);
+    }
+    
+    .day .dnum{
+      font-weight:800;
+      font-size:16px;
+      color:var(--text-primary);
+    }
+    
+    .day .ddate{
+      font-size:11px;
+      color:var(--text-muted);
+      margin-top:8px;
+      font-weight:500;
+    }
+    
+    .day.done{
+      background:linear-gradient(135deg,var(--success),#059669);
+      color:var(--bg-dark);
+      border-color:var(--success);
+      box-shadow:0 8px 24px rgba(16,185,129,0.4);
+    }
+    
+    .day.done .dnum,.day.done .ddate{
+      color:var(--bg-dark);
+    }
+    
+    .day.today{
+      outline:2px solid var(--accent-gold);
+      outline-offset:2px;
+      box-shadow:0 0 0 4px rgba(245,158,11,0.2);
+    }
 
-    /* checklist area */
-    #dayChecklistArea{margin-top:14px}
-    .check-row{display:flex;align-items:center;justify-content:space-between;padding:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border-radius:8px;margin-bottom:8px}
+    #dayChecklistArea{
+      margin-top:32px;
+      padding-top:32px;
+      border-top:1px solid var(--border);
+    }
+    
+    .check-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:16px 20px;
+      background:var(--glass);
+      backdrop-filter:blur(10px);
+      border-radius:10px;
+      border:1px solid var(--glass-border);
+      margin-bottom:12px;
+      transition:all 0.2s ease;
+    }
+    
+    .check-row:hover{
+      background:rgba(255,255,255,0.08);
+      border-color:rgba(245,158,11,0.3);
+    }
+    
+    .check-row input[type=checkbox]{
+      width:24px;
+      height:24px;
+      cursor:pointer;
+      accent-color:var(--accent-gold);
+    }
 
-    .progress{height:12px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden}
-    .progress > i{display:block;height:100%;background:linear-gradient(90deg,#60a5fa,#3b82f6);width:0%}
+    .progress{
+      height:16px;
+      background:rgba(0,0,0,0.3);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid var(--glass-border);
+      box-shadow:inset 0 2px 8px rgba(0,0,0,0.3);
+    }
+    
+    .progress > i{
+      display:block;
+      height:100%;
+      background:linear-gradient(90deg,var(--accent-gold),var(--accent-gold-light));
+      width:0%;
+      transition:width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow:0 0 20px rgba(245,158,11,0.6);
+    }
 
-    aside .card{position:sticky;top:28px}
+    aside .card{
+      position:sticky;
+      top:40px;
+    }
 
-    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    footer{
+      margin-top:48px;
+      padding-top:32px;
+      border-top:1px solid var(--border);
+      color:var(--text-muted);
+      font-size:13px;
+      text-align:center;
+    }
 
-    /* responsive */
-    @media(max-width:1100px){.grid{grid-template-columns:1fr 320px}}
-    @media(max-width:880px){.grid{grid-template-columns:1fr}.day-grid{grid-template-columns:repeat(6,1fr)}}
-    @media(max-width:420px){.day-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:1200px){
+      .grid{
+        grid-template-columns:1fr 380px;
+        gap:24px;
+      }
+    }
+    
+    @media(max-width:1000px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+      .day-grid{
+        grid-template-columns:repeat(8,1fr);
+      }
+    }
+    
+    @media(max-width:768px){
+      .day-grid{
+        grid-template-columns:repeat(5,1fr);
+      }
+      .top-stats{
+        justify-content:center;
+      }
+      header{
+        justify-content:center;
+      }
+    }
+    
+    @media(max-width:500px){
+      .day-grid{
+        grid-template-columns:repeat(3,1fr);
+      }
+      .brand{
+        flex-direction:column;
+        text-align:center;
+      }
+    }
 
-    /* subtle utilities */
-    .muted{color:var(--muted)}
-    .flex{display:flex;gap:8px;align-items:center}
-    textarea{background:transparent;border:1px solid rgba(255,255,255,0.04);color:inherit;padding:8px;border-radius:8px}
+    .muted{
+      color:var(--text-muted);
+    }
+    
+    .flex{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    
+    input[type=date],input[type=text],textarea{
+      background:var(--glass);
+      backdrop-filter:blur(10px);
+      border:1px solid var(--glass-border);
+      color:var(--text-primary);
+      padding:12px 16px;
+      border-radius:10px;
+      font-size:14px;
+      transition:all 0.2s ease;
+    }
+    
+    input[type=date]:focus,input[type=text]:focus,textarea:focus{
+      outline:none;
+      border-color:var(--accent-gold);
+      background:rgba(245,158,11,0.05);
+      box-shadow:0 0 0 3px rgba(245,158,11,0.1);
+    }
+    
+    textarea{
+      resize:vertical;
+      font-family:inherit;
+    }
+    
+    hr{
+      border:0;
+      border-top:1px solid var(--border);
+      margin:24px 0;
+    }
+    
+    code{
+      background:rgba(0,0,0,0.4);
+      padding:3px 8px;
+      border-radius:6px;
+      font-size:12px;
+      color:var(--accent-gold-light);
+      border:1px solid rgba(245,158,11,0.2);
+    }
+    
+    ol,ul{
+      line-height:1.8;
+    }
+    
+    ol li,ul li{
+      margin-bottom:8px;
+    }
+    
+    strong{
+      color:var(--text-primary);
+      font-weight:700;
+    }
   </style>
 </head>
 <body>
@@ -85,143 +456,210 @@
       <div class="brand">
         <div class="logo">60</div>
         <div>
-          <h1>60‑Day Habit Change Plan</h1>
-          <div class="sub">Small daily wins — build consistent sleep, diet & activity habits</div>
+          <h1>60‑Day Habit Transformation</h1>
+          <div class="sub">Elite system for building consistent sleep, nutrition & movement habits</div>
         </div>
       </div>
 
       <div class="top-stats">
-        <div class="stat small">Start: <strong id="startDate">(not set)</strong></div>
-        <div class="stat small">Days done: <strong id="daysTracked">0</strong>/60</div>
-        <div class="stat small">Overall progress: <strong id="percent">0%</strong></div>
+        <div class="stat">
+          <div class="label">Start Date</div>
+          <strong id="startDate">(not set)</strong>
+        </div>
+        <div class="stat">
+          <div class="label">Days Completed</div>
+          <strong id="daysTracked">0</strong><span style="color:var(--text-muted);font-size:14px">/60</span>
+        </div>
+        <div class="stat">
+          <div class="label">Overall Progress</div>
+          <strong id="percent">0%</strong>
+        </div>
       </div>
     </header>
 
     <div class="grid">
       <section>
-        <div class="card" aria-labelledby="controls">
-          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
-            <div style="flex:1">
+        <div class="card">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start">
+            <div>
               <div class="small">Select your 60-day start date</div>
-              <input type="date" id="start" />
+              <input type="date" id="start" style="width:100%;margin-top:12px" />
             </div>
-            <div style="width:320px;text-align:right">
-              <div class="small">Progress</div>
-              <div class="progress" style="width:220px"><i id="progFill"></i></div>
-            </div>
-          </div>
-
-          <hr style="margin:14px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
-
-          <div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start">
-            <div style="flex:1">
-              <div class="small">Daily habits</div>
-              <div class="habit-list" id="habitList"></div>
-
-              <div style="display:flex;gap:8px;margin-top:10px">
-                <input id="newHabit" type="text" placeholder="Add custom habit (e.g., 10 min walk)" />
-                <button class="btn" id="addHabit">Add</button>
-                <button class="btn secondary" id="resetHabits">Reset</button>
-              </div>
-            </div>
-
-            <div style="width:320px">
-              <div class="small">60‑day calendar (tap a day to open checklist)</div>
-              <div class="day-grid" id="dayGrid" aria-label="60 day calendar"></div>
-
-              <div style="margin-top:10px;display:flex;gap:8px;justify-content:space-between;align-items:center">
-                <div class="small">Selected day: <strong id="selectedDayText">—</strong></div>
-                <div style="display:flex;gap:8px">
-                  <button class="btn" id="prevDay">Prev</button>
-                  <button class="btn" id="nextDay">Next</button>
-                </div>
-              </div>
-
+            <div>
+              <div class="small">Overall Progress</div>
+              <div class="progress" style="margin-top:12px"><i id="progFill"></i></div>
             </div>
           </div>
-
-          <hr style="margin:14px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
-
-          <div id="dayChecklistArea" style="display:none">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-              <div>
-                <div class="small">Checklist for</div>
-                <div style="font-weight:800" id="selectedDayHeader">Day 1 — Date</div>
-              </div>
-              <div class="habit-actions">
-                <button class="btn secondary" id="clearDay">Clear</button>
-                <button class="btn" id="markAll">Mark all done</button>
-              </div>
-            </div>
-
-            <div style="margin-top:12px" id="checklist"></div>
-          </div>
-
         </div>
 
-        <div class="card" style="margin-top:12px">
-          <h3 style="margin:0;font-size:15px">60-Day Plan (overview)</h3>
-          <p class="small" style="margin-top:8px">Four phases — each phase is 15 days. Focus one area at a time but keep previous wins.</p>
+        <div class="card">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px">
+            <div>
+              <h3 class="section-title">Daily Habits</h3>
+              <div class="habit-list" id="habitList"></div>
 
-          <ol style="margin:10px 0 0 18px;font-size:14px">
-            <li><strong>Days 1–15 (Sleep & baseline)</strong>: Move bedtime earlier by 15 minutes every 3 days until you reach 7–8 hrs. No screens 30 min before bed. Track hours of sleep daily.</li>
-            <li><strong>Days 16–30 (Stabilize blood sugar)</strong>: Lower refined carbs, add protein for breakfast, 10–15 min walk after meals, drink water first thing and between meals.</li>
-            <li><strong>Days 31–45 (Build movement)</strong>: Add strength training 2× week, brisk walks 4× week, short post-meal walks daily. Increase NEAT (standing, stairs).</li>
-            <li><strong>Days 46–60 (Refine & solidify)</strong>: Tighten fasting adherence, reduce hidden calories, aim for consistent 7–8 hrs sleep, review labs if no improvement.</li>
-          </ol>
+              <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+                <input id="newHabit" type="text" placeholder="Add custom habit..." style="flex:1;min-width:200px" />
+                <button class="btn" id="addHabit">Add Habit</button>
+                <button class="btn secondary" id="resetHabits">Reset to Default</button>
+              </div>
+            </div>
 
-          <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
-          <div class="small">Tip: start with 3–4 core daily habits (sleep target, no sugar after 8pm, 10-min post-meal walk, 20–30 min strength/cardio). Add more only after these are consistent for a week.</div>
+            <div>
+              <h3 class="section-title">60-Day Calendar</h3>
+              <div class="small" style="margin-bottom:12px">Click any day to open its checklist</div>
+              <div class="day-grid" id="dayGrid" aria-label="60 day calendar"></div>
+
+              <div style="margin-top:20px;display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap">
+                <div class="small">Selected: <strong id="selectedDayText" style="color:var(--text-primary)">None</strong></div>
+                <div style="display:flex;gap:10px">
+                  <button class="btn secondary" id="prevDay">← Prev</button>
+                  <button class="btn secondary" id="nextDay">Next →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="dayChecklistArea" style="display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+              <div>
+                <div class="small">Checklist for</div>
+                <h2 style="font-size:24px;font-weight:800;margin-top:8px" id="selectedDayHeader">Day 1</h2>
+              </div>
+              <div style="display:flex;gap:10px">
+                <button class="btn secondary" id="clearDay">Clear Day</button>
+                <button class="btn" id="markAll">Mark All Done</button>
+              </div>
+            </div>
+
+            <div style="margin-top:24px" id="checklist"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Your 60-Day Transformation Blueprint</h3>
+          <p style="color:var(--text-muted);margin-bottom:20px;line-height:1.7">A carefully structured four-phase approach designed to build sustainable habits. Each phase lasts 15 days and builds upon the previous foundation.</p>
+
+          <div style="display:grid;gap:20px">
+            <div style="background:var(--glass);padding:20px;border-radius:12px;border:1px solid var(--glass-border)">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent-gold),var(--accent-gold-light));display:grid;place-items:center;font-weight:900;color:var(--bg-dark)">1</div>
+                <strong style="font-size:16px">Days 1–15: Sleep Foundation & Baseline</strong>
+              </div>
+              <p style="color:var(--text-muted);line-height:1.7;margin-left:52px">Move bedtime earlier by 15 minutes every 3 days until you achieve 7–8 hours. Eliminate screens 30 minutes before bed. Track sleep hours daily to establish your baseline.</p>
+            </div>
+
+            <div style="background:var(--glass);padding:20px;border-radius:12px;border:1px solid var(--glass-border)">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent-gold),var(--accent-gold-light));display:grid;place-items:center;font-weight:900;color:var(--bg-dark)">2</div>
+                <strong style="font-size:16px">Days 16–30: Stabilize Blood Sugar</strong>
+              </div>
+              <p style="color:var(--text-muted);line-height:1.7;margin-left:52px">Reduce refined carbohydrates, prioritize protein at breakfast, take 10–15 minute walks after meals, hydrate with water first thing each morning and between meals.</p>
+            </div>
+
+            <div style="background:var(--glass);padding:20px;border-radius:12px;border:1px solid var(--glass-border)">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent-gold),var(--accent-gold-light));display:grid;place-items:center;font-weight:900;color:var(--bg-dark)">3</div>
+                <strong style="font-size:16px">Days 31–45: Build Movement Capacity</strong>
+              </div>
+              <p style="color:var(--text-muted);line-height:1.7;margin-left:52px">Implement strength training twice weekly, brisk walks four times per week, short post-meal walks daily. Increase NEAT (non-exercise activity) through standing and stairs.</p>
+            </div>
+
+            <div style="background:var(--glass);padding:20px;border-radius:12px;border:1px solid var(--glass-border)">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent-gold),var(--accent-gold-light));display:grid;place-items:center;font-weight:900;color:var(--bg-dark)">4</div>
+                <strong style="font-size:16px">Days 46–60: Refine & Solidify</strong>
+              </div>
+              <p style="color:var(--text-muted);line-height:1.7;margin-left:52px">Optimize fasting windows, eliminate hidden calories, maintain consistent 7–8 hour sleep schedule. Consider lab work if improvements plateau.</p>
+            </div>
+          </div>
+
+          <div style="margin-top:24px;padding:20px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:12px">
+            <strong style="color:var(--accent-gold-light);display:block;margin-bottom:8px">💡 Pro Tip</strong>
+            <p style="color:var(--text-muted);line-height:1.7">Begin with 3–4 core daily habits (sleep target, eliminate sugar after 8pm, 10-minute post-meal walk, 20–30 minute strength/cardio session). Only add new habits after maintaining consistency for one full week.</p>
+          </div>
         </div>
 
       </section>
 
       <aside>
         <div class="card">
-          <div class="small">Quick actions</div>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-            <button class="btn" id="markToday">Open today</button>
-            <button class="btn secondary" id="export">Export JSON</button>
-            <button class="btn secondary" id="importBtn">Import JSON</button>
+          <h3 class="section-title">Quick Actions</h3>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <button class="btn" id="markToday" style="width:100%">📅 Open Today's Checklist</button>
+            <button class="btn secondary" id="export" style="width:100%">💾 Export Data (JSON)</button>
+            <button class="btn secondary" id="importBtn" style="width:100%">📥 Import Data (JSON)</button>
             <input type="file" id="importFile" style="display:none" accept="application/json" />
-            <button class="btn secondary" id="clearAll">Clear all data</button>
+            <button class="btn secondary" id="clearAll" style="width:100%;color:#fb7185;border-color:rgba(251,113,133,0.3)">🗑️ Clear All Data</button>
           </div>
+        </div>
 
-          <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
-
-          <div class="small">Default habits (editable)</div>
-          <ul style="margin:8px 0 0 18px;color:var(--muted)">
-            <li>Sleep >= 7 hrs</li>
-            <li>No sugar / sugary drinks</li>
-            <li>Protein-rich breakfast</li>
-            <li>10–15 min walk after meal</li>
-            <li>Strength or bodyweight session</li>
+        <div class="card">
+          <h3 class="section-title">Default Habits</h3>
+          <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px">These habits load by default. Customize them to match your goals.</p>
+          <ul style="list-style:none;padding:0">
+            <li style="padding:12px;background:var(--glass);border-radius:8px;margin-bottom:8px;border:1px solid var(--glass-border)">✅ Sleep ≥ 7 hours</li>
+            <li style="padding:12px;background:var(--glass);border-radius:8px;margin-bottom:8px;border:1px solid var(--glass-border)">🚫 No sugary drinks</li>
+            <li style="padding:12px;background:var(--glass);border-radius:8px;margin-bottom:8px;border:1px solid var(--glass-border)">🍳 Protein-rich breakfast</li>
+            <li style="padding:12px;background:var(--glass);border-radius:8px;margin-bottom:8px;border:1px solid var(--glass-border)">🚶 10–15 min post-meal walk</li>
+            <li style="padding:12px;background:var(--glass);border-radius:8px;margin-bottom:8px;border:1px solid var(--glass-border)">💪 Strength training session</li>
           </ul>
         </div>
 
-        <div class="card" style="margin-top:12px">
-          <div class="small">How to use</div>
-          <ol style="margin:8px 0 0 18px;color:var(--muted)">
-            <li>Choose a start date (day 1) — this creates 60 days.</li>
-            <li>Edit daily habits to match your goals.</li>
-            <li>Tap any day and check off habits as you complete them.</li>
-            <li>Use export/import to backup or move between devices.</li>
-          </ol>
+        <div class="card">
+          <h3 class="section-title">How to Use</h3>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;gap:12px;align-items:start">
+              <div style="min-width:32px;height:32px;border-radius:8px;background:var(--glass);display:grid;place-items:center;font-weight:700;color:var(--accent-gold)">1</div>
+              <div style="flex:1">
+                <strong style="display:block;margin-bottom:4px">Choose Start Date</strong>
+                <p style="color:var(--text-muted);font-size:13px;line-height:1.6">Select day 1 to generate your 60-day calendar</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:start">
+              <div style="min-width:32px;height:32px;border-radius:8px;background:var(--glass);display:grid;place-items:center;font-weight:700;color:var(--accent-gold)">2</div>
+              <div style="flex:1">
+                <strong style="display:block;margin-bottom:4px">Customize Habits</strong>
+                <p style="color:var(--text-muted);font-size:13px;line-height:1.6">Edit habits to align with your personal goals</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:start">
+              <div style="min-width:32px;height:32px;border-radius:8px;background:var(--glass);display:grid;place-items:center;font-weight:700;color:var(--accent-gold)">3</div>
+              <div style="flex:1">
+                <strong style="display:block;margin-bottom:4px">Track Progress</strong>
+                <p style="color:var(--text-muted);font-size:13px;line-height:1.6">Click any day and check off completed habits</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:start">
+              <div style="min-width:32px;height:32px;border-radius:8px;background:var(--glass);display:grid;place-items:center;font-weight:700;color:var(--accent-gold)">4</div>
+              <div style="flex:1">
+                <strong style="display:block;margin-bottom:4px">Backup Data</strong>
+                <p style="color:var(--text-muted);font-size:13px;line-height:1.6">Export/import to sync across devices</p>
+              </div>
+            </div>
+          </div>
         </div>
       </aside>
     </div>
 
     <footer>
-      <div class="small">Made for personal tracking — stores data in your browser only (localStorage). To publish on GitHub: create a repo, add this file as <code>index.html</code> and enable GitHub Pages from the repository settings.</div>
+      <p style="line-height:1.8">Built for personal habit transformation. All data stored locally in your browser (localStorage). Deploy to GitHub: create a repository, upload this file as <code>index.html</code>, and enable GitHub Pages in repository settings.</p>
+      <p style="margin-top:12px;color:rgba(156,163,175,0.6)">© 2025 60-Day Habit Transformation System</p>
     </footer>
   </div>
 
   <script>
-    // Premium, more robust 60-day checklist
-    const STORAGE_KEY = 'habit60_v1';
-    const defaultHabits = ['Sleep ≥ 7 hrs','No sugary drinks','Protein breakfast','10–15 min post-meal walk','Strength session (20–30 min)'];
+    // Premium 60-day habit tracker with localStorage
+    const STORAGE_KEY = 'habit60_premium_v1';
+    const defaultHabits = [
+      'Sleep ≥ 7 hrs',
+      'No sugary drinks',
+      'Protein breakfast',
+      '10–15 min post-meal walk',
+      'Strength session (20–30 min)'
+    ];
 
-    // elements
+    // DOM elements
     const startInput = document.getElementById('start');
     const habitList = document.getElementById('habitList');
     const newHabit = document.getElementById('newHabit');
@@ -236,122 +674,9 @@
     const daysTrackedLabel = document.getElementById('daysTracked');
     const percentLabel = document.getElementById('percent');
 
-    // state
+    // State
     let state = loadState();
     let selectedIndex = null;
 
-    // helpers for safe date parsing (treat date as local date)
-    function parseYMD(ymd){ if(!ymd) return null; const [y,m,d] = ymd.split('-').map(Number); return new Date(y, m-1, d); }
-    function fmt(d){ if(!d) return '(not set)'; return d.toLocaleDateString(); }
-    function fmtLong(d){ if(!d) return ''; return d.toDateString(); }
-
-    function loadState(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if(raw){
-          const parsed = JSON.parse(raw);
-          // migrate missing fields
-          parsed.habits = parsed.habits || defaultHabits.slice();
-          parsed.days = parsed.days || {};
-          parsed.start = parsed.start || null;
-          return parsed;
-        }
-      }catch(e){console.error('loadState',e)}
-      return {start:null,habits:defaultHabits.slice(),days:{}};
-    }
-
-    function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
-
-    // render habits — editable, deletable
-    function renderHabits(){habitList.innerHTML='';state.habits.forEach((h,idx)=>{
-      const el = document.createElement('div');el.className='habit';
-      const input = document.createElement('input');input.type='text';input.value=h;input.setAttribute('aria-label','Habit name');input.onchange=()=>{state.habits[idx]=input.value.trim()||'Untitled habit'; saveState(); renderDayChecklist(); renderDayGrid();}
-      const del = document.createElement('button');del.className='btn secondary';del.textContent='Delete';del.onclick=()=>{if(!confirm('Delete this habit?')) return; state.habits.splice(idx,1); saveState(); renderHabits(); renderDayChecklist(); renderDayGrid();}
-      el.appendChild(input); el.appendChild(del); habitList.appendChild(el);
-    });
-    }
-
-    addHabit.addEventListener('click',()=>{const v=newHabit.value.trim(); if(!v) return; state.habits.push(v); newHabit.value=''; saveState(); renderHabits(); renderDayChecklist(); renderDayGrid();})
-
-    document.getElementById('resetHabits').addEventListener('click',()=>{ if(!confirm('Reset to default habits?')) return; state.habits = defaultHabits.slice(); saveState(); renderHabits(); renderDayChecklist(); renderDayGrid();})
-
-    startInput.addEventListener('change',()=>{ state.start = startInput.value || null; saveState(); renderAll(); })
-
-    // create array of 60 Date objects (local dates)
-    function makeDays(){ if(!state.start) return []; const s = parseYMD(state.start); if(!s) return []; const arr=[]; for(let i=0;i<60;i++){ const d = new Date(s.getFullYear(), s.getMonth(), s.getDate()+i); arr.push(d); } return arr; }
-
-    function renderDayGrid(){ dayGrid.innerHTML=''; const days = makeDays(); const today = new Date(); const todayYMD = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
-      days.forEach((d,i)=>{
-        const dd = document.createElement('div'); dd.className='day';
-        const num = document.createElement('div'); num.className='dnum'; num.textContent = 'D'+(i+1);
-        const date = document.createElement('div'); date.className='ddate'; date.textContent = d.toLocaleDateString();
-        dd.appendChild(num); dd.appendChild(date);
-        const key = keyFor(i);
-        // mark done when completedCount >= habits.length
-        if(key && state.days[key] && (state.days[key].completedCount >= state.habits.length)) dd.classList.add('done');
-        // highlight today if within range
-        const isToday = (d.getFullYear()===today.getFullYear() && d.getMonth()===today.getMonth() && d.getDate()===today.getDate());
-        if(isToday) dd.classList.add('today');
-        dd.onclick = ()=>{ openDay(i); };
-        dd.onkeyup = (e)=>{ if(e.key === 'Enter' || e.key === ' ') openDay(i); };
-        dd.tabIndex = 0;
-        dayGrid.appendChild(dd);
-      }); updateProgress(); }
-
-    function openDay(i){ const days = makeDays(); if(!days[i]) return; selectedIndex = i; const d = days[i]; selectedDayText.textContent = 'Day '+(i+1)+' — '+d.toLocaleDateString(); selectedDayHeader.textContent = 'Day '+(i+1)+' — '+fmtLong(d); dayChecklistArea.style.display='block'; renderDayChecklist(); scrollIntoViewIfNeeded(dayChecklistArea); }
-
-    function scrollIntoViewIfNeeded(el){ const r = el.getBoundingClientRect(); if(r.top < 0 || r.bottom > (window.innerHeight || document.documentElement.clientHeight)) el.scrollIntoView({behavior:'smooth',block:'center'}); }
-
-    function renderDayChecklist(){ checklist.innerHTML=''; if(selectedIndex===null){ dayChecklistArea.style.display='none'; return; }
-      const k = keyFor(selectedIndex); if(!k) return; const saved = state.days[k] || {items:{},note:''};
-      state.habits.forEach((h,idx)=>{
-        const row = document.createElement('div'); row.className='check-row';
-        const left = document.createElement('div'); left.textContent = h; left.style.flex='1'; left.style.paddingRight='12px';
-        const cb = document.createElement('input'); cb.type='checkbox'; cb.checked = !!saved.items[idx]; cb.onchange = ()=>{ saved.items[idx] = cb.checked; saveDay(k,saved); renderDayGrid(); renderDayChecklist(); }
-        row.appendChild(left); row.appendChild(cb); checklist.appendChild(row);
-      });
-      const note = document.createElement('textarea'); note.rows = 3; note.style.width='100%'; note.placeholder='Notes (optional)'; note.value = saved.note || ''; note.onchange = ()=>{ saved.note = note.value; saveDay(k,saved); }
-      checklist.appendChild(note);
-      const meta = document.createElement('div'); meta.style.marginTop='8px'; meta.style.display='flex'; meta.style.justifyContent='space-between'; meta.style.alignItems='center';
-      const doneCount = Object.values(saved.items||{}).filter(Boolean).length;
-      const leftMeta = document.createElement('div'); leftMeta.className='small muted'; leftMeta.textContent = `Completed: ${doneCount}/${state.habits.length}`;
-      const pct = Math.round(state.habits.length ? (doneCount/state.habits.length*100) : 0);
-      const rightMeta = document.createElement('div'); rightMeta.className='small'; rightMeta.innerHTML = `<span style=\"font-weight:800\">${pct}%</span>`;
-      meta.appendChild(leftMeta); meta.appendChild(rightMeta); checklist.appendChild(meta);
-    }
-
-    function saveDay(key,obj){ obj.completedCount = Object.values(obj.items||{}).filter(Boolean).length; state.days[key] = obj; saveState(); updateProgress(); }
-
-    function keyFor(i){ if(!state.start) return null; return 'd'+(i+1); }
-
-    document.getElementById('prevDay').addEventListener('click',()=>{ if(selectedIndex>0) openDay(selectedIndex-1); })
-    document.getElementById('nextDay').addEventListener('click',()=>{ if(selectedIndex===null) openDay(0); else if(selectedIndex<59) openDay(selectedIndex+1); })
-    document.getElementById('markAll').addEventListener('click',()=>{ const k = keyFor(selectedIndex); if(!k) return; const obj = {items:{},note:''}; state.habits.forEach((_,i)=> obj.items[i]=true); saveDay(k,obj); renderDayChecklist(); renderDayGrid(); })
-    document.getElementById('clearDay').addEventListener('click',()=>{ const k = keyFor(selectedIndex); if(!k) return; if(!confirm('Clear all checks for this day?')) return; delete state.days[k]; saveState(); renderDayChecklist(); renderDayGrid(); })
-
-    document.getElementById('markToday').addEventListener('click',()=>{
-      if(!state.start){ alert('Set a start date first.'); return }
-      const today = new Date(); const s = parseYMD(state.start);
-      const diff = Math.floor((today - s) / (24*3600*1000)); if(diff<0||diff>59){ alert('Today is outside your 60-day window.'); return }
-      openDay(diff);
-    })
-
-    function updateProgress(){ const totalDays = 60; let fullyDone = 0; let totalTasks = 0; let completedTasks = 0; for(let i=0;i<totalDays;i++){ const k='d'+(i+1); const day = state.days[k]; totalTasks += state.habits.length; if(day){ completedTasks += (day.completedCount || 0); if((day.completedCount||0) >= state.habits.length) fullyDone++; } }
-      const percent = totalTasks ? Math.round((completedTasks/totalTasks)*100) : 0;
-      progFill.style.width = percent+'%'; daysTrackedLabel.textContent = fullyDone; percentLabel.textContent = percent + '%'; startDateLabel.textContent = state.start ? fmt(parseYMD(state.start)) : '(not set)';
-    }
-
-    // export/import
-    document.getElementById('export').addEventListener('click',()=>{ const blob = new Blob([JSON.stringify(state, null, 2)],{type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'habit60-export.json'; a.click(); URL.revokeObjectURL(url); })
-    document.getElementById('importBtn').addEventListener('click',()=> document.getElementById('importFile').click())
-    document.getElementById('importFile').addEventListener('change', e=>{ const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ()=>{ try{ const parsed = JSON.parse(r.result); // basic validation
-          if(typeof parsed !== 'object' || !parsed) throw new Error('Invalid'); state = parsed; state.habits = state.habits || defaultHabits.slice(); state.days = state.days || {}; state.start = state.start || null; saveState(); renderAll(); alert('Import complete'); }catch(err){ alert('Invalid file'); } }; r.readAsText(f); })
-
-    document.getElementById('clearAll').addEventListener('click',()=>{ if(!confirm('Clear all saved data?')) return; localStorage.removeItem(STORAGE_KEY); state = loadState(); selectedIndex = null; renderAll(); })
-
-    // init
-    function renderAll(){ renderHabits(); renderDayGrid(); if(state.start) startInput.value = state.start; updateProgress(); }
-    renderAll();
-  </script>
-</body>
-</html>
+    // Date helpers
+    function parseYMD(ymd) {
