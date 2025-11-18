@@ -448,6 +448,11 @@
       color:var(--text-primary);
       font-weight:700;
     }
+
+    /* small utility */
+    .muted-small { color:var(--text-muted); font-size:13px; }
+    .danger { color:#fb7185; }
+    .pill { padding:6px 10px; border-radius:999px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); font-weight:700; font-size:13px }
   </style>
 </head>
 <body>
@@ -456,7 +461,7 @@
       <div class="brand">
         <div class="logo">60</div>
         <div>
-          <h1>60‑Day Habit Transformation</h1>
+          <h1>60-Day Habit Transformation</h1>
           <div class="sub">Elite system for building consistent sleep, nutrition & movement habits</div>
         </div>
       </div>
@@ -649,7 +654,7 @@
   </div>
 
   <script>
-    // Premium 60-day habit tracker with localStorage
+    // Premium 60-day habit tracker with full functionality
     const STORAGE_KEY = 'habit60_premium_v1';
     const defaultHabits = [
       'Sleep ≥ 7 hrs',
@@ -673,10 +678,491 @@
     const startDateLabel = document.getElementById('startDate');
     const daysTrackedLabel = document.getElementById('daysTracked');
     const percentLabel = document.getElementById('percent');
+    const prevDayBtn = document.getElementById('prevDay');
+    const nextDayBtn = document.getElementById('nextDay');
+    const markAllBtn = document.getElementById('markAll');
+    const clearDayBtn = document.getElementById('clearDay');
+    const markTodayBtn = document.getElementById('markToday');
+    const exportBtn = document.getElementById('export');
+    const importBtn = document.getElementById('importBtn');
+    const importFile = document.getElementById('importFile');
+    const clearAllBtn = document.getElementById('clearAll');
+    const resetHabitsBtn = document.getElementById('resetHabits');
 
     // State
     let state = loadState();
-    let selectedIndex = null;
+    let selectedIndex = null; // 0-based index for days (0..59)
 
-    // Date helpers
-    function parseYMD(ymd) {
+    // Helpers
+    function formatDateYMD(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function todayAtMidnight() {
+      const d = new Date();
+      d.setHours(0,0,0,0);
+      return d;
+    }
+
+    // Save & load
+    function defaultState() {
+      return {
+        startDate: null, // 'YYYY-MM-DD'
+        habits: [...defaultHabits],
+        days: Array.from({length:60}, () => ({ checks: Array(defaultHabits.length).fill(false) }))
+      };
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return defaultState();
+        const parsed = JSON.parse(raw);
+        // Basic migration/validation:
+        if (!parsed.startDate) parsed.startDate = null;
+        if (!Array.isArray(parsed.habits) || parsed.habits.length === 0) parsed.habits = [...defaultHabits];
+        if (!Array.isArray(parsed.days) || parsed.days.length !== 60) {
+          parsed.days = Array.from({length:60}, () => ({ checks: Array(parsed.habits.length).fill(false) }));
+        } else {
+          // Adapt day check arrays to current habit length
+          parsed.days = parsed.days.map(d => {
+            if (!Array.isArray(d.checks)) d.checks = Array(parsed.habits.length).fill(false);
+            else if (d.checks.length < parsed.habits.length) {
+              // extend
+              return { checks: d.checks.concat(Array(parsed.habits.length - d.checks.length).fill(false)) };
+            } else if (d.checks.length > parsed.habits.length) {
+              // shrink (keep earliest)
+              return { checks: d.checks.slice(0, parsed.habits.length) };
+            }
+            return { checks: d.checks };
+          });
+        }
+        return parsed;
+      } catch (e) {
+        console.error('Failed reading state, resetting', e);
+        return defaultState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    // UI renderers
+    function renderHabits() {
+      habitList.innerHTML = '';
+      state.habits.forEach((h, i) => {
+        const row = document.createElement('div');
+        row.className = 'habit';
+        row.innerHTML = `
+          <div class="pill">${i+1}</div>
+          <input type="text" data-index="${i}" value="${escapeHtml(h)}" />
+          <div style="display:flex;gap:8px">
+            <button class="btn secondary" data-action="up" data-index="${i}" title="Move up">▲</button>
+            <button class="btn secondary" data-action="down" data-index="${i}" title="Move down">▼</button>
+            <button class="btn secondary" data-action="del" data-index="${i}" title="Delete">🗑️</button>
+          </div>
+        `;
+        habitList.appendChild(row);
+      });
+
+      // Attach listeners for habit input changes and buttons
+      habitList.querySelectorAll('input[type=text]').forEach(inp => {
+        inp.addEventListener('change', e => {
+          const idx = Number(e.target.dataset.index);
+          const val = e.target.value.trim();
+          if (val.length === 0) {
+            // prevent empty habit; revert
+            e.target.value = state.habits[idx];
+            return;
+          }
+          state.habits[idx] = val;
+          // If habit count same, nothing else; save and re-render checklist if open
+          saveState();
+          renderChecklist();
+          renderDayGrid(); // label update
+          updateStats();
+        });
+      });
+
+      habitList.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const action = btn.dataset.action;
+          const idx = Number(btn.dataset.index);
+          if (action === 'del') {
+            if (!confirm(`Delete habit "${state.habits[idx]}"? This will remove its checks from every day.`)) return;
+            state.habits.splice(idx,1);
+            // update each day checks arrays
+            state.days.forEach(d => {
+              d.checks.splice(idx,1);
+            });
+            saveState();
+            renderHabits();
+            renderChecklist();
+            renderDayGrid();
+            updateStats();
+          } else if (action === 'up') {
+            if (idx === 0) return;
+            swapHabits(idx, idx-1);
+          } else if (action === 'down') {
+            if (idx === state.habits.length-1) return;
+            swapHabits(idx, idx+1);
+          }
+        });
+      });
+    }
+
+    function swapHabits(a,b) {
+      const tmp = state.habits[a];
+      state.habits[a] = state.habits[b];
+      state.habits[b] = tmp;
+      // swap in each day
+      state.days.forEach(d => {
+        const ctmp = d.checks[a];
+        d.checks[a] = d.checks[b];
+        d.checks[b] = ctmp;
+      });
+      saveState();
+      renderHabits();
+      renderChecklist();
+      renderDayGrid();
+      updateStats();
+    }
+
+    function renderDayGrid() {
+      dayGrid.innerHTML = '';
+      for (let i=0;i<60;i++){
+        const dayObj = state.days[i];
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'day';
+        const dayNum = i+1;
+        const dateText = computeDateTextForIndex(i);
+        const allDone = dayObj.checks.every(Boolean);
+        if (allDone) dayDiv.classList.add('done');
+        // highlight today's day if start date set and matches
+        const todayIndex = computeTodayIndex();
+        if (todayIndex === i) dayDiv.classList.add('today');
+
+        dayDiv.innerHTML = `<div class="dnum">Day ${dayNum}</div><div class="ddate">${dateText || ''}</div>`;
+        dayDiv.dataset.index = i;
+        dayDiv.addEventListener('click', () => openDay(i));
+        dayGrid.appendChild(dayDiv);
+      }
+    }
+
+    function computeDateTextForIndex(index) {
+      if (!state.startDate) return '';
+      try {
+        const s = new Date(state.startDate + 'T00:00:00');
+        const d = new Date(s.getTime() + index * 24*60*60*1000);
+        return d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function computeTodayIndex() {
+      if (!state.startDate) return null;
+      const start = new Date(state.startDate + 'T00:00:00');
+      const today = todayAtMidnight();
+      const diff = Math.floor((today - start) / (24*60*60*1000));
+      if (diff < 0 || diff > 59) return null;
+      return diff;
+    }
+
+    function openDay(index) {
+      selectedIndex = index;
+      dayChecklistArea.style.display = 'block';
+      selectedDayText.textContent = `Day ${index+1}`;
+      selectedDayHeader.textContent = `Day ${index+1} — ${computeDateTextForIndex(index) || '(date not set)'}`;
+      renderChecklist();
+      // scroll into view mildly
+      selectedDayHeader.scrollIntoView({behavior:'smooth', block:'center'});
+      highlightSelectedDay();
+    }
+
+    function highlightSelectedDay() {
+      document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
+      if (selectedIndex !== null) {
+        const el = dayGrid.querySelector(`.day[data-index="${selectedIndex}"]`);
+        if (el) el.classList.add('selected');
+      }
+    }
+
+    function renderChecklist() {
+      checklist.innerHTML = '';
+      if (selectedIndex === null) return;
+      const day = state.days[selectedIndex];
+      // ensure checks length matches habits
+      if (day.checks.length !== state.habits.length) {
+        day.checks = Array.from({length: state.habits.length}, (_,i) => day.checks[i] || false);
+        saveState();
+      }
+      state.habits.forEach((h, i) => {
+        const row = document.createElement('div');
+        row.className = 'check-row';
+        row.innerHTML = `
+          <div style="display:flex;align-items:center;gap:12px">
+            <input type="checkbox" data-index="${i}" ${day.checks[i] ? 'checked' : ''} />
+            <div style="font-weight:700">${escapeHtml(h)}</div>
+          </div>
+          <div class="muted-small">#${i+1}</div>
+        `;
+        checklist.appendChild(row);
+      });
+
+      // Attach change listeners
+      checklist.querySelectorAll('input[type=checkbox]').forEach(cb => {
+        cb.addEventListener('change', e => {
+          const idx = Number(e.target.dataset.index);
+          state.days[selectedIndex].checks[idx] = e.target.checked;
+          saveState();
+          renderDayGrid();
+          updateStats();
+        });
+      });
+    }
+
+    function markAllDone() {
+      if (selectedIndex === null) return;
+      state.days[selectedIndex].checks = state.days[selectedIndex].checks.map(() => true);
+      saveState();
+      renderChecklist();
+      renderDayGrid();
+      updateStats();
+    }
+
+    function clearDay() {
+      if (selectedIndex === null) return;
+      if (!confirm('Clear this day (uncheck all habits)?')) return;
+      state.days[selectedIndex].checks = state.days[selectedIndex].checks.map(() => false);
+      saveState();
+      renderChecklist();
+      renderDayGrid();
+      updateStats();
+    }
+
+    function addHabitHandler() {
+      const val = newHabit.value.trim();
+      if (!val) return;
+      state.habits.push(val);
+      // add default false check for all days
+      state.days.forEach(d => d.checks.push(false));
+      newHabit.value = '';
+      saveState();
+      renderHabits();
+      renderChecklist();
+      renderDayGrid();
+      updateStats();
+    }
+
+    function resetHabitsToDefault() {
+      if (!confirm('Reset habits to defaults? This will replace your current habits (checks for removed habits will be lost).')) return;
+      state.habits = [...defaultHabits];
+      state.days.forEach(d => d.checks = Array(state.habits.length).fill(false));
+      saveState();
+      renderHabits();
+      renderChecklist();
+      renderDayGrid();
+      updateStats();
+    }
+
+    function prevDay() {
+      if (selectedIndex === null) {
+        selectedIndex = 0;
+      } else {
+        selectedIndex = Math.max(0, selectedIndex - 1);
+      }
+      openDay(selectedIndex);
+    }
+
+    function nextDay() {
+      if (selectedIndex === null) {
+        selectedIndex = 0;
+      } else {
+        selectedIndex = Math.min(59, selectedIndex + 1);
+      }
+      openDay(selectedIndex);
+    }
+
+    function openToday() {
+      const idx = computeTodayIndex();
+      if (idx === null) {
+        alert('Today is outside your 60-day window or start date is not set.');
+        return;
+      }
+      openDay(idx);
+    }
+
+    function exportData() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `habit60_backup_${formatDateYMD(new Date())}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function importDataFromFile(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          if (!Array.isArray(parsed.habits) || !Array.isArray(parsed.days)) {
+            alert('Invalid file format.');
+            return;
+          }
+          // basic acceptance with confirm
+          if (!confirm('Importing will replace current data. Proceed?')) return;
+          // normalize: ensure 60 days
+          if (parsed.days.length !== 60) {
+            // try to coerce or create days
+            const newDays = Array.from({length:60}, (_,i) => {
+              const src = parsed.days[i] || { checks: Array(parsed.habits.length).fill(false) };
+              return { checks: Array.from(src.checks || []).slice(0, parsed.habits.length).concat(Array(Math.max(0, parsed.habits.length - (src.checks || []).length)).fill(false)) };
+            });
+            parsed.days = newDays;
+          } else {
+            // ensure each day's checks length matches habits
+            parsed.days = parsed.days.map(d => {
+              if (!Array.isArray(d.checks)) d.checks = Array(parsed.habits.length).fill(false);
+              else if (d.checks.length < parsed.habits.length) d.checks = d.checks.concat(Array(parsed.habits.length - d.checks.length).fill(false));
+              else if (d.checks.length > parsed.habits.length) d.checks = d.checks.slice(0, parsed.habits.length);
+              return { checks: d.checks };
+            });
+          }
+          state = {
+            startDate: parsed.startDate || null,
+            habits: parsed.habits,
+            days: parsed.days
+          };
+          saveState();
+          applyStateToUI();
+          alert('Import successful.');
+        } catch (e) {
+          console.error(e);
+          alert('Failed to import file.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function clearAll() {
+      if (!confirm('Clear all data (this will reset start date, habits and all checks)?')) return;
+      state = defaultState();
+      saveState();
+      applyStateToUI();
+    }
+
+    function applyStateToUI() {
+      // set start date input
+      startInput.value = state.startDate || '';
+      startDateLabel.textContent = state.startDate || '(not set)';
+      renderHabits();
+      renderDayGrid();
+      dayChecklistArea.style.display = 'none';
+      selectedIndex = null;
+      selectedDayText.textContent = 'None';
+      updateStats();
+    }
+
+    function updateStats() {
+      // Days completed = count of days where all habits done
+      const daysCompleted = state.days.filter(d => d.checks.every(Boolean)).length;
+      daysTrackedLabel.textContent = daysCompleted;
+      // Overall progress percent = (total checks done) / (60 * habitCount) *100
+      const totalSlots = 60 * Math.max(1, state.habits.length);
+      let totalDone = 0;
+      state.days.forEach(d => d.checks.forEach(c => { if (c) totalDone++; }));
+      const pct = totalSlots === 0 ? 0 : Math.round((totalDone / totalSlots) * 100);
+      percentLabel.textContent = `${pct}%`;
+      progFill.style.width = `${pct}%`;
+      saveState();
+    }
+
+    function escapeHtml(unsafe) {
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Events
+    startInput.addEventListener('change', e => {
+      const val = e.target.value || null;
+      if (val) {
+        // validate date
+        try {
+          const d = new Date(val + 'T00:00:00');
+          if (isNaN(d.getTime())) throw new Error('Invalid date');
+          state.startDate = val;
+          startDateLabel.textContent = state.startDate;
+          renderDayGrid();
+          updateStats();
+          saveState();
+        } catch {
+          alert('Invalid date chosen.');
+          state.startDate = null;
+          startDateLabel.textContent = '(not set)';
+          saveState();
+        }
+      } else {
+        state.startDate = null;
+        startDateLabel.textContent = '(not set)';
+        renderDayGrid();
+        saveState();
+      }
+    });
+
+    addHabit.addEventListener('click', addHabitHandler);
+    newHabit.addEventListener('keydown', e => {
+      if (e.key === 'Enter') addHabitHandler();
+    });
+
+    resetHabitsBtn.addEventListener('click', resetHabitsToDefault);
+    prevDayBtn.addEventListener('click', prevDay);
+    nextDayBtn.addEventListener('click', nextDay);
+    markAllBtn.addEventListener('click', markAllDone);
+    clearDayBtn.addEventListener('click', clearDay);
+    markTodayBtn.addEventListener('click', openToday);
+    exportBtn.addEventListener('click', exportData);
+    importBtn.addEventListener('click', () => importFile.click());
+    importFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      importDataFromFile(file);
+      e.target.value = '';
+    });
+    clearAllBtn.addEventListener('click', clearAll);
+
+    // Init
+    applyStateToUI();
+
+    // Small UX: show tooltip/date for today's index when start changes
+    function attachStartHint() {
+      // no-op for now; could show ephemeral messages
+    }
+
+    // When the page loads, if start date exists, highlight today and open today's checklist automatically?
+    // We choose not to open automatically to avoid surprising the user. But we highlight today's day visually.
+    // However if today's index is within range, show a subtle hint in console:
+    const todayIdx = computeTodayIndex();
+    if (todayIdx !== null) {
+      console.log('Today falls on day index', todayIdx+1);
+    }
+
+    // Final safety: ensure state consistency
+    saveState();
+
+    // End script
+  </script>
+</body>
+</html>
